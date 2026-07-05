@@ -8,6 +8,7 @@ Built for the RAISE Summit hackathon. DSync uses **Otari AI** for design review 
 
 ## Table of Contents
 
+- [How Cursor Helped Me](#Cursor-Usage)
 - [Features](#features)
 - [Architecture Overview](#architecture-overview)
 - [Tech Stack](#tech-stack)
@@ -23,6 +24,12 @@ Built for the RAISE Summit hackathon. DSync uses **Otari AI** for design review 
 - [Technical Documentation](#technical-documentation)
 
 ---
+## How Cursor Helped Me
+Honestly, this is my first time using Cursor. The very reason I chose this track was because my Professor said 'You will love it!'. And yes, I loved it! I got so impressed that I don't manually have to give the model the context of what I am working on. Just connect it to the folder and you are good to go. 
+
+Cursor was literally my life saviour in this journey. DSync requires an entirely new website and also the figma designs for demo. I have participated in the RAISE Summit individually. So, it seemed impossible to also code DSync and make another website and figma design in such a short span of time. But, I used cursor and it did the work for me. The website - womentor seen in the demo is coded by Cursor. Website is done but now I was unsure about the figma designs. However, Cursor gave me the figma Code to Design plugin code and boom....all the designs are ready!!! I also used Cursor to implement the Figma and Github PR features.
+
+Thank you so much for the credits Cursor team! You all are a blessing to the world :)
 
 ## Features
 
