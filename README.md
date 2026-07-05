@@ -3,8 +3,7 @@
 **Design & Engineering in Sync** — a Flask web app that keeps designers and engineers aligned by connecting Figma, meeting transcripts, knowledge bases, and GitHub pull requests into one AI-powered workflow.
 
 Built for the RAISE Summit hackathon. DSync uses **Otari AI** for design review and handoffs, **Gradium** for transcription, **Figma REST API** for design sync, and **GitHub** for PR validation.
-1 min - https://youtu.be/EMAnmTbxuGk?si=OZQvZBK5cwdijDrn
-4 min (must watch) - https://youtu.be/Fl1ydArW28c?si=cMj3L6-sSt-d9b-P
+
 ---
 
 ## Table of Contents
