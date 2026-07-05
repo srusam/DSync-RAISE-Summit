@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% from "_macros.html" import page_header %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="row align-items-center w-100">
+        <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0">
+            <span class="badge rounded-pill hero-badge">Design ↔ Engineering</span>
+            <h1 class="display-4 fw-bold mt-4 fade-up">
+                Keep design &amp;<br>code in <span class="brand-accent">sync</span>.
+            </h1>
+            <p class="lead mt-4 page-subtitle">
+                DSync connects Figma, knowledge bases, meeting transcripts,
+                and GitHub PRs — so designers and engineers never drift apart.
+            </p>
+            <div class="mt-5">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg px-4 me-3">
+                    Open Dashboard
+                </a>
+                {% else %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4 me-3">
+                    Get Started
+                </a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg px-4">
+                    Login
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-6 text-center">
+            <img src="{{ url_for('static', filename='images/hero.svg') }}"
+                 class="hero-illustration hero-image img-fluid" alt="DSync">
+        </div>
+    </div>
+</section>
+
+<section id="features" class="mt-5 pb-5">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="feature-card">
+                <img src="{{ url_for('static', filename='images/chat.svg') }}" class="feature-card-icon" alt="">
+                <h3>AI Design Memory</h3>
+                <p class="page-subtitle mb-0">
+                    Record meetings, store knowledge — AI warns when changes conflict with past findings.
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="feature-card">
+                <img src="{{ url_for('static', filename='images/upload.svg') }}" class="feature-card-icon" alt="">
+                <h3>Figma Sync</h3>
+                <p class="page-subtitle mb-0">
+                    Connect Figma files and detect changes against your team's full context.
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="feature-card">
+                <img src="{{ url_for('static', filename='images/dashboard.svg') }}" class="feature-card-icon" alt="">
+                <h3>PR Design Check</h3>
+                <p class="page-subtitle mb-0">
+                    GitHub PRs are compared against finalized designs — catch mismatches before merge.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

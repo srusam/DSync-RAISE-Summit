@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div class="row align-items-center min-vh-75 py-4">
+    <div class="col-lg-6 text-center mb-4 mb-lg-0">
+        <img src="{{ url_for('static', filename='images/login.svg') }}"
+             class="img-fluid hero-illustration" alt="Login">
+    </div>
+    <div class="col-lg-6">
+        <div class="feature-card p-5">
+            <h2 class="fw-bold mb-1">Welcome to <span class="brand-accent">DSync</span></h2>
+            <p class="page-subtitle mb-4">Sign in to your workspace</p>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control") }}
+                </div>
+                <div class="mb-4">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control") }}
+                </div>
+                {{ form.submit(class="btn btn-primary w-100") }}
+            </form>
+            <div class="text-center mt-4 page-subtitle">
+                Don't have an account?
+                <a href="{{ url_for('auth.register') }}">Register</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

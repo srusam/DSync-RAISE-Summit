@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "_macros.html" import back_link, page_header %}
+
+{% block title %}Add Knowledge{% endblock %}
+
+{% block content %}
+
+{{ back_link(url_for('main.knowledge', project_id=project.id), "Knowledge Base") }}
+{{ page_header("Add Knowledge Entry") }}
+
+<div class="feature-card p-4">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.content.label(class="form-label") }}
+            {{ form.content(class="form-control", rows=8) }}
+        </div>
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+</div>
+
+{% endblock %}

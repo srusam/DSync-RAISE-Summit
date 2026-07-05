@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% from "_macros.html" import page_header, empty_state %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-5">
+    <div>
+        {{ page_header("My Projects", "Welcome back, " ~ current_user.username) }}
+    </div>
+    <a href="{{ url_for('main.create_project') }}" class="btn btn-primary">
+        + Create Project
+    </a>
+</div>
+
+<div class="row g-4">
+{% for project in projects %}
+<div class="col-md-4">
+    <a href="{{ url_for('main.project', project_id=project.id) }}" class="feature-card-link">
+        <div class="feature-card dashboard-card">
+            <img src="{{ url_for('static', filename='images/dashboard.svg') }}" class="feature-card-icon" alt="">
+            <h4>{{ project.title }}</h4>
+            <p class="page-subtitle">{{ project.description or "No description" }}</p>
+            <small class="text-light opacity-50">
+                Created {{ project.created_at.strftime("%d %b %Y") }}
+            </small>
+        </div>
+    </a>
+</div>
+{% else %}
+<div class="col-12">
+    <div class="feature-card">
+        {{ empty_state("empty.svg", "No projects yet", "Create your first project to start syncing design and code.") }}
+        <div class="text-center">
+            <a href="{{ url_for('main.create_project') }}" class="btn btn-primary">Create Project</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+
+{% endblock %}

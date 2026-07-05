@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% from "_macros.html" import back_link, page_header %}
+
+{% block title %}Record — {{ project.title }}{% endblock %}
+
+{% block content %}
+
+{{ back_link(url_for('main.project', project_id=project.id), "Project") }}
+
+{% if media_type == "video" %}
+{{ page_header("Record Video", project.title ~ " — capture a design walkthrough") }}
+{% else %}
+{{ page_header("Record Audio", project.title ~ " — capture a design decision") }}
+{% endif %}
+
+<div class="feature-card p-4">
+    <img src="{{ url_for('static', filename='images/upload.svg') }}" class="feature-card-icon" alt="">
+
+    <div class="record-controls">
+        <button id="startBtn" class="btn btn-success">Start Recording</button>
+        <button id="stopBtn" class="btn btn-danger" disabled>Stop</button>
+        <button id="saveBtn" class="btn btn-primary" style="display:none;">Save Recording</button>
+    </div>
+
+    <div class="media-preview-box">
+        {% if media_type == "video" %}
+        <video id="preview" controls style="display:none;"></video>
+        {% else %}
+        <audio id="preview" controls style="display:none;"></audio>
+        {% endif %}
+        <p id="preview-placeholder" class="page-subtitle text-center mb-0 py-4">
+            Press Start to begin recording
+        </p>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/record.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "_macros.html" import back_link, page_header, insight_card, empty_state %}
+
+{% block title %}AI Insights — {{ project.title }}{% endblock %}
+
+{% block content %}
+
+{{ back_link(url_for('main.figma_page', project_id=project.id), "Figma") }}
+{{ page_header("AI Insights", "Review and action design alerts") }}
+
+{% for insight in insights %}
+{{ insight_card(insight, project.id) }}
+{% else %}
+<div class="feature-card">
+    {{ empty_state("chat.svg", "No insights yet", "Sync Figma after making design changes.") }}
+</div>
+{% endfor %}
+
+{% endblock %}

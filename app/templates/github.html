@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% from "_macros.html" import back_link, page_header, ai_card, ai_output, empty_state %}
+
+{% block title %}GitHub — {{ project.title }}{% endblock %}
+
+{% block content %}
+
+{{ back_link(url_for('main.project', project_id=project.id), "Project") }}
+{{ page_header("GitHub PR Check", "Compare code changes against your finalized design") }}
+
+<div class="feature-card p-4 mb-4">
+    <h5 class="text-white mb-3">Connect Repository</h5>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="input-group mb-3">
+            {{ form.repo_url(class="form-control") }}
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+    {% if github_repo %}
+    <div class="connected-badge">
+        <img src="{{ url_for('static', filename='images/error.svg') }}" width="20" class="me-2" alt="">
+        <strong>{{ github_repo.owner }}/{{ github_repo.repo_name }}</strong>
+        <span class="page-subtitle ms-2">connected</span>
+    </div>
+    {% endif %}
+</div>
+
+{% if github_repo %}
+<div class="feature-card p-4 mb-4">
+    <h5 class="text-white mb-2">Check a PR Manually</h5>
+    <p class="page-subtitle">Enter PR number — great for demo without webhook.</p>
+    <form method="POST" action="{{ url_for('main.check_github_pr', project_id=project.id) }}" class="input-group">
+        <span class="input-group-text">PR #</span>
+        <input type="number" name="pr_number" class="form-control" placeholder="42" min="1" required>
+        <button class="btn btn-success" type="submit">Analyze PR</button>
+    </form>
+</div>
+{% endif %}
+
+<div class="feature-card p-4 mb-4">
+    <h5 class="text-white mb-2">Webhook Setup <small class="page-subtitle">(optional)</small></h5>
+    <ul class="page-subtitle small mb-0">
+        <li>URL: <code>{{ request.url_root }}webhooks/github</code></li>
+        <li>Events: <strong>Pull requests</strong></li>
+        <li>Secret: <code>GITHUB_WEBHOOK_SECRET</code> from .env</li>
+    </ul>
+</div>
+
+<div class="feature-card p-4">
+    <h5 class="text-white mb-3">PR Analysis Results</h5>
+
+    {% for pr in pull_requests %}
+    <div class="pr-card">
+        <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-2">
+            <div>
+                <strong class="text-white">#{{ pr.pr_number }} — {{ pr.title }}</strong>
+                {% if pr.pr_url %}
+                <a href="{{ pr.pr_url }}" target="_blank" class="small ms-2">View on GitHub ↗</a>
+                {% endif %}
+            </div>
+            {% if pr.is_design_change %}
+            <span class="status-pill badge-design">Design PR</span>
+            {% else %}
+            <span class="status-pill badge-skipped">Not design</span>
+            {% endif %}
+        </div>
+        <small class="page-subtitle d-block mb-2">
+            {{ pr.created_at.strftime('%Y-%m-%d %H:%M') }} · {{ pr.status }}
+        </small>
+        {% if pr.mismatch_report and pr.is_design_change %}
+        {{ ai_output(pr.mismatch_report) }}
+        {% elif pr.mismatch_report %}
+        <p class="page-subtitle mb-0">{{ pr.mismatch_report }}</p>
+        {% endif %}
+    </div>
+    {% else %}
+    {{ empty_state("empty.svg", "No PRs analyzed", "Connect a repo and analyze a PR number.") }}
+    {% endfor %}
+</div>
+
+{% endblock %}

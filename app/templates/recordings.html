@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% from "_macros.html" import back_link, page_header, empty_state %}
+
+{% block title %}Recordings — {{ project.title }}{% endblock %}
+
+{% block content %}
+
+{{ back_link(url_for('main.project', project_id=project.id), "Project") }}
+{{ page_header("Design Memory", "Audio & video recordings with transcripts") }}
+
+<div class="feature-card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <span class="status-pill badge-design">{{ recordings|length }} recording(s)</span>
+        <a href="{{ url_for('main.record', project_id=project.id, type='audio') }}" class="btn btn-primary btn-sm">
+            + New Recording
+        </a>
+    </div>
+
+    {% for recording in recordings %}
+    <div class="recording-card">
+
+        <div class="recording-card-header">
+            <div class="recording-type">
+                <img src="{{ url_for('static', filename='images/upload.svg') }}" alt="">
+                {% if recording.media_type == "video" %}
+                    Video Recording
+                {% else %}
+                    Audio Recording
+                {% endif %}
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <small class="text-light opacity-50">
+                    {{ recording.created_at.strftime("%d %b %Y · %I:%M %p") }}
+                </small>
+                <form action="{{ url_for('main.delete_recording', recording_id=recording.id) }}" method="POST">
+                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+
+        {% if recording.media_type == "video" %}
+        <div class="media-wrapper">
+            <video controls class="media-video">
+                <source src="{{ url_for('main.uploaded_recording', filename=recording.file_path) }}" type="video/webm">
+            </video>
+        </div>
+        {% else %}
+        <div class="media-wrapper">
+            <audio controls class="media-audio">
+                <source src="{{ url_for('main.uploaded_recording', filename=recording.file_path) }}" type="audio/webm">
+            </audio>
+        </div>
+        {% endif %}
+
+        {% if recording.transcript %}
+        <div class="transcript-box">
+            <div class="transcript-label">
+                <img src="{{ url_for('static', filename='images/chat.svg') }}" width="18" height="18" alt="">
+                Transcript
+            </div>
+            <p class="transcript-text">{{ recording.transcript }}</p>
+        </div>
+        {% endif %}
+
+    </div>
+    {% else %}
+    {{ empty_state("empty.svg", "No recordings yet", "Record your first design discussion to build project memory.") }}
+    {% endfor %}
+</div>
+
+{% endblock %}

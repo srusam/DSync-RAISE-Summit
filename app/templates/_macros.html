@@ -1,0 +1,104 @@
+{# DSync reusable UI macros #}
+
+{% macro back_link(url, label="Back") %}
+<a href="{{ url }}" class="back-link">← {{ label }}</a>
+{% endmacro %}
+
+
+{% macro ai_output(content) %}
+<div class="ai-output">
+    {{ content | markdown | safe }}
+</div>
+{% endmacro %}
+
+
+{% macro ai_card(content, timestamp, label="AI Insight") %}
+<div class="ai-card">
+    <div class="ai-card-header">
+        <img src="{{ url_for('static', filename='images/chat.svg') }}" alt="">
+        <span class="ai-card-meta">{{ label }} · {{ timestamp }}</span>
+    </div>
+    {{ ai_output(content) }}
+</div>
+{% endmacro %}
+
+
+{% macro insight_status_badge(insight) %}
+{% set status = insight.status or 'pending' %}
+{% if status == 'pending' %}
+<span class="insight-badge insight-badge-pending">Needs review</span>
+{% elif status == 'acknowledged' %}
+<span class="insight-badge insight-badge-ack">Acknowledged</span>
+{% elif status == 'dismissed' %}
+<span class="insight-badge insight-badge-dismissed">Dismissed</span>
+{% elif status == 'snoozed' %}
+<span class="insight-badge insight-badge-snoozed">
+    Snoozed{% if insight.snoozed_until %} until {{ insight.snoozed_until.strftime('%d %b') }}{% endif %}
+</span>
+{% endif %}
+{% endmacro %}
+
+
+{% macro insight_card(insight, project_id) %}
+<div class="ai-card insight-card-{{ insight.status or 'pending' }}">
+    <div class="ai-card-header flex-wrap">
+        <div class="d-flex align-items-center gap-2">
+            <img src="{{ url_for('static', filename='images/chat.svg') }}" alt="">
+            <span class="ai-card-meta">
+                Design Alert · {{ insight.created_at.strftime('%Y-%m-%d %H:%M') }}
+            </span>
+        </div>
+        {{ insight_status_badge(insight) }}
+    </div>
+
+    {{ ai_output(insight.summary) }}
+
+    {% if insight.action_note and insight.status in ('acknowledged', 'dismissed') %}
+    <p class="insight-note mt-2 mb-0">
+        <strong>Note:</strong> {{ insight.action_note }}
+    </p>
+    {% endif %}
+
+    {% if (insight.status or 'pending') == 'pending' %}
+    <div class="insight-actions mt-3">
+        <form method="POST"
+              action="{{ url_for('main.acknowledge_insight', project_id=project_id, insight_id=insight.id) }}"
+              class="insight-action-form">
+            <input type="text" name="note" class="form-control form-control-sm mb-2"
+                   placeholder="Optional note (e.g. proceeding anyway — user testing done)">
+            <button type="submit" class="btn btn-sm btn-success">Acknowledge</button>
+        </form>
+        <form method="POST"
+              action="{{ url_for('main.dismiss_insight', project_id=project_id, insight_id=insight.id) }}"
+              class="d-inline">
+            <input type="hidden" name="note" value="">
+            <button type="submit" class="btn btn-sm btn-outline-secondary">Dismiss</button>
+        </form>
+        <form method="POST"
+              action="{{ url_for('main.snooze_insight', project_id=project_id, insight_id=insight.id) }}"
+              class="d-inline">
+            <button type="submit" class="btn btn-sm btn-outline-light">Snooze 7 days</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endmacro %}
+
+
+{% macro empty_state(svg, title, message) %}
+<div class="empty-state">
+    <img src="{{ url_for('static', filename='images/' ~ svg) }}" alt="">
+    <h4>{{ title }}</h4>
+    <p>{{ message }}</p>
+</div>
+{% endmacro %}
+
+
+{% macro page_header(title, subtitle="") %}
+<div class="page-header">
+    <h2 class="text-white">{{ title }}</h2>
+    {% if subtitle %}
+    <p class="page-subtitle">{{ subtitle }}</p>
+    {% endif %}
+</div>
+{% endmacro %}

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% from "_macros.html" import back_link, page_header %}
+
+{% block title %}{{ project.title }}{% endblock %}
+
+{% block content %}
+
+{{ back_link(url_for('main.dashboard'), "Dashboard") }}
+
+<div class="d-flex justify-content-between align-items-start mb-5">
+    <div class="page-header mb-0">
+        <h1 class="text-white">{{ project.title }}</h1>
+        <p class="page-subtitle">{{ project.description }}</p>
+    </div>
+    <form action="{{ url_for('main.delete_project', project_id=project.id) }}"
+          method="POST"
+          onsubmit="return confirm('Delete this project permanently?');">
+        <button class="btn btn-outline-danger btn-sm">Delete Project</button>
+    </form>
+</div>
+
+<a href="{{ url_for('main.timeline', project_id=project.id) }}" class="feature-card-link d-block mb-4">
+    <div class="feature-card timeline-promo">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <img src="{{ url_for('static', filename='images/dashboard.svg') }}" width="44" height="44" alt="">
+                <div>
+                    <h5 class="text-white mb-1">Activity Timeline</h5>
+                    <p class="page-subtitle mb-0">Recordings, Figma syncs, AI alerts, handoffs &amp; PRs — one feed</p>
+                </div>
+            </div>
+            {% if pending_insights > 0 %}
+            <span class="insight-badge insight-badge-pending">{{ pending_insights }} need review</span>
+            {% else %}
+            <span class="btn btn-sm btn-outline-light">Open timeline →</span>
+            {% endif %}
+        </div>
+    </div>
+</a>
+
+<div class="row g-4 mb-5">
+
+    <div class="col-md-4">
+        <div class="feature-card">
+            <img src="{{ url_for('static', filename='images/upload.svg') }}" class="feature-card-icon" alt="">
+            <h5 class="text-white mb-3">Record</h5>
+            <div class="d-grid gap-2">
+                <a href="{{ url_for('main.record', project_id=project.id, type='audio') }}" class="btn btn-primary">
+                    Record Audio
+                </a>
+                <a href="{{ url_for('main.record', project_id=project.id, type='video') }}" class="btn btn-outline-light">
+                    Record Video
+                </a>
+            </div>
+            <p class="page-subtitle mt-3 mb-0 small">
+                Capture design discussions and walkthroughs.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{{ url_for('main.knowledge', project_id=project.id) }}" class="feature-card-link">
+            <div class="feature-card">
+                <img src="{{ url_for('static', filename='images/dashboard.svg') }}" class="feature-card-icon" alt="">
+                <h5 class="text-white">Knowledge Base</h5>
+                <p class="page-subtitle mb-0">AI-searchable project memory</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{{ url_for('main.figma_page', project_id=project.id) }}" class="feature-card-link">
+            <div class="feature-card">
+                <img src="{{ url_for('static', filename='images/chat.svg') }}" class="feature-card-icon" alt="">
+                <h5 class="text-white">Figma + AI Review</h5>
+                <p class="page-subtitle mb-0">Sync designs &amp; get AI alerts</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{{ url_for('main.handoff_page', project_id=project.id) }}" class="feature-card-link">
+            <div class="feature-card">
+                <img src="{{ url_for('static', filename='images/upload.svg') }}" class="feature-card-icon" alt="">
+                <h5 class="text-white">Engineer Handoff</h5>
+                <p class="page-subtitle mb-0">Dev-ready specs from design</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{{ url_for('main.github_page', project_id=project.id) }}" class="feature-card-link">
+            <div class="feature-card">
+                <img src="{{ url_for('static', filename='images/error.svg') }}" class="feature-card-icon" alt="">
+                <h5 class="text-white">GitHub PR Check</h5>
+                <p class="page-subtitle mb-0">Design vs code comparison</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{{ url_for('main.constraints_page', project_id=project.id) }}" class="feature-card-link">
+            <div class="feature-card">
+                <img src="{{ url_for('static', filename='images/register.svg') }}" class="feature-card-icon" alt="">
+                <h5 class="text-white">Constraints</h5>
+                <p class="page-subtitle mb-0">Engineer rules &amp; limits</p>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+<a href="{{ url_for('main.recordings', project_id=project.id) }}" class="feature-card-link">
+    <div class="feature-card">
+        <div class="d-flex align-items-center gap-3">
+            <img src="{{ url_for('static', filename='images/upload.svg') }}" width="40" height="40" alt="">
+            <div>
+                <h5 class="text-white mb-1">Design Memory</h5>
+                <p class="page-subtitle mb-0">{{ recordings|length }} recording(s) stored</p>
+            </div>
+        </div>
+    </div>
+</a>
+
+{% endblock %}

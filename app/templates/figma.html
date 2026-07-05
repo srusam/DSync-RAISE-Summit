@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% from "_macros.html" import back_link, page_header, insight_card, empty_state %}
+
+{% block title %}Figma — {{ project.title }}{% endblock %}
+
+{% block content %}
+
+{{ back_link(url_for('main.project', project_id=project.id), "Project") }}
+{{ page_header("Figma + AI Review", "Sync design changes and get context-aware alerts") }}
+
+<div class="feature-card p-4 mb-4">
+    <h5 class="text-white mb-3">Connect Figma File</h5>
+    <div class="input-group mb-3">
+        <input type="text" id="figma-input" class="form-control"
+               placeholder="https://www.figma.com/design/ABC123/My-Design"
+               value="{{ figma_file.file_key if figma_file else '' }}">
+        <button class="btn btn-primary" id="connect-btn">Connect</button>
+    </div>
+    <div id="connect-status" class="small page-subtitle"></div>
+
+    {% if figma_file %}
+    <div class="connected-badge mt-3">
+        <strong>{{ figma_file.file_name }}</strong><br>
+        <span class="page-subtitle small">
+            Key: {{ figma_file.file_key }} · Modified: {{ figma_file.last_modified or 'unknown' }}
+        </span>
+    </div>
+    {% endif %}
+</div>
+
+{% if figma_file %}
+<div class="feature-card p-4 mb-4">
+    <h5 class="text-white mb-2">Sync Changes</h5>
+    <p class="page-subtitle">Edit in Figma, then sync. AI compares against knowledge base &amp; transcripts.</p>
+    <button class="btn btn-success" id="sync-btn">Sync from Figma</button>
+    <div id="sync-status" class="mt-3 small page-subtitle"></div>
+    <div id="sync-insight" class="mt-3"></div>
+</div>
+{% endif %}
+
+<div class="feature-card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="text-white mb-0">AI Insights</h5>
+        <a href="{{ url_for('main.timeline', project_id=project.id) }}" class="btn btn-sm btn-outline-light">
+            View timeline
+        </a>
+    </div>
+    <div id="insights-list">
+        {% for insight in insights %}
+        {{ insight_card(insight, project.id) }}
+        {% else %}
+        <div id="no-insights">
+            {{ empty_state("chat.svg", "No insights yet", "Connect Figma, make a change, then Sync.") }}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>const PROJECT_ID = {{ project.id }};</script>
+<script src="{{ url_for('static', filename='js/figma.js') }}"></script>
+{% endblock %}

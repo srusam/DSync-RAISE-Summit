@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from "_macros.html" import back_link, page_header, empty_state %}
+
+{% block title %}Constraints — {{ project.title }}{% endblock %}
+
+{% block content %}
+
+{{ back_link(url_for('main.project', project_id=project.id), "Project") }}
+{{ page_header("Engineer Constraints", "Rules AI uses when reviewing designs and generating specs") }}
+
+<div class="feature-card p-4 mb-4">
+    <h5 class="text-white mb-3">Add Constraint</h5>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">{{ form.text(class="form-control", rows=3) }}</div>
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+</div>
+
+<div class="feature-card p-4">
+    <h5 class="text-white mb-3">Active Constraints</h5>
+    {% for c in constraints %}
+    <div class="constraint-item d-flex justify-content-between align-items-start gap-3">
+        <div>
+            <p class="text-light mb-1">{{ c.text }}</p>
+            <small class="page-subtitle">{{ c.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+        </div>
+        <form method="POST"
+              action="{{ url_for('main.delete_constraint', project_id=project.id, constraint_id=c.id) }}"
+              onsubmit="return confirm('Remove this constraint?');">
+            <button class="btn btn-sm btn-outline-danger">Remove</button>
+        </form>
+    </div>
+    {% else %}
+    {{ empty_state("register.svg", "No constraints yet", 'Example: "Primary CTA must use brand accent color only."') }}
+    {% endfor %}
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('main.handoff_page', project_id=project.id) }}" class="btn btn-outline-light">
+        → Engineer Handoff
+    </a>
+</div>
+
+{% endblock %}

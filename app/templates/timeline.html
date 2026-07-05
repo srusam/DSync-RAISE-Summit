@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% from "_macros.html" import back_link, page_header, empty_state, insight_status_badge %}
+
+{% block title %}Timeline — {{ project.title }}{% endblock %}
+
+{% block content %}
+
+{{ back_link(url_for('main.project', project_id=project.id), "Project") }}
+
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div class="page-header mb-0">
+        <h2 class="text-white">Activity Timeline</h2>
+        <p class="page-subtitle">Everything that happened in this project — in one place</p>
+    </div>
+    {% if pending_count > 0 %}
+    <span class="insight-badge insight-badge-pending">
+        {{ pending_count }} insight(s) need review
+    </span>
+    {% endif %}
+</div>
+
+<div class="timeline">
+    {% for event in events %}
+    <div class="timeline-item timeline-{{ event.kind }}">
+        <div class="timeline-marker">
+            <img src="{{ url_for('static', filename='images/' ~ event.icon) }}" alt="">
+        </div>
+        <div class="timeline-content feature-card">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-1">
+                <a href="{{ event.link }}" class="timeline-title">{{ event.title }}</a>
+                <time class="timeline-time">{{ event.at.strftime('%d %b %Y · %I:%M %p') }}</time>
+            </div>
+            <p class="timeline-body page-subtitle mb-0">{{ event.body }}</p>
+            {% if event.insight_status %}
+            <div class="mt-2">
+                {% if event.insight_status == 'pending' %}
+                <span class="insight-badge insight-badge-pending">Needs review</span>
+                {% elif event.insight_status == 'acknowledged' %}
+                <span class="insight-badge insight-badge-ack">Acknowledged</span>
+                {% elif event.insight_status == 'dismissed' %}
+                <span class="insight-badge insight-badge-dismissed">Dismissed</span>
+                {% elif event.insight_status == 'snoozed' %}
+                <span class="insight-badge insight-badge-snoozed">Snoozed</span>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="feature-card">
+        {{ empty_state("empty.svg", "No activity yet", "Record a meeting, add knowledge, or connect Figma to get started.") }}
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
